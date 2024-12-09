@@ -1,0 +1,142 @@
+<div
+  class="board-container board mt-24 h-screen overflow-auto whitespace-nowrap bg-grey-light px-1.6 py-2.4 dark:bg-grey-vdark sm:mt-32 sm:px-2.4 lg:mt-36"
+>
+  <div class="p-4">
+    <div class="flex justify-between items-center mb-4">
+      <div>
+        <label for="startDate" class="mr-2">Start Period</label>
+        <select id="startDate" [(ngModel)]="startPeriod" (change)="updateMonths()">
+          <option *ngFor="let month of allMonths" [value]="month">{{ month }}</option>
+        </select>
+      </div>
+      <div>
+        <label for="endDate" class="mr-2">End Period</label>
+        <select id="endDate" [(ngModel)]="endPeriod" (change)="updateMonths()">
+          <option *ngFor="let month of allMonths" [value]="month">{{ month }}</option>
+        </select>
+      </div>
+    </div>
+
+    <table class="table-auto border-collapse border border-gray-300 w-full">
+      <thead>
+      <tr>
+        <th class="border border-gray-300 px-4 py-2">Category</th>
+        <th *ngFor="let month of months" class="border border-gray-300 px-4 py-2">{{ month }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- Income Section -->
+      <tr>
+        <td [attr.colspan]="months.length + 3"  class="bg-gray-100 font-bold">Income</td>
+      </tr>
+      <ng-container *ngFor="let category of incomeCategories; let i = index">
+        <tr *ngFor="let subcategory of category.subcategories; let j = index">
+          <td>{{ subcategory.name }}</td>
+          <td
+            *ngFor="let value of subcategory.values; let k = index"
+            contenteditable
+            class="border border-gray-300 px-4 py-2 text-right"
+            [attr.id]="'cell-income-' + i + '-' + j + '-' + k"
+            (input)="onValueChange($event, i, j, k, 'income')"
+            (keydown)="handleKeydown($event, i, j, k, 'income')"
+            (dblclick)="openModal()"
+          >
+            {{ value || 0 }}
+          </td>
+        </tr>
+        <tr>
+          <td class="font-bold">Sub Totals</td>
+          <td
+            *ngFor="let subtotal of category.subTotals"
+            class="border border-gray-300 px-4 py-2 text-right"
+          >
+            {{ subtotal }}
+          </td>
+        </tr>
+      </ng-container>
+      <tr>
+        <td [attr.colspan]="1" class="font-bold">Income Total</td>
+        <td
+          *ngFor="let total of overallIncomeTotals"
+          class="border border-gray-300 px-4 py-2 text-right"
+        >
+          {{ total }}
+        </td>
+      </tr>
+
+      <!--Expense Section -->
+      <tr>
+        <td [attr.colspan]="months.length + 3"  class="bg-gray-100 font-bold">Expense</td>
+      </tr>
+      <ng-container *ngFor="let category of expenseCategories; let i = index">
+        <tr *ngFor="let subcategory of category.subcategories; let j = index">
+          <td>{{ subcategory.name }}</td>
+          <td
+            *ngFor="let value of subcategory.values; let k = index"
+            contenteditable
+            class="border border-gray-300 px-4 py-2 text-right"
+            [attr.id]="'cell-expense-' + i + '-' + j + '-' + k"
+            (dblclick)="openModal()"
+            (input)="onValueChange($event, i, j, k, 'expense')"
+            (keydown)="handleKeydown($event, i, j, k, 'expense')"
+          >
+            {{ value || 0 }}
+          </td>
+        </tr>
+        <tr>
+          <td class="font-bold">Sub Totals</td>
+          <td
+            *ngFor="let subtotal of category.subTotals"
+            class="border border-gray-300 px-4 py-2 text-right"
+          >
+            {{ subtotal }}
+          </td>
+        </tr>
+      </ng-container>
+      <tr>
+        <td [attr.colspan]="1" class="font-bold">Expense Total</td>
+        <td
+          *ngFor="let total of overallExpenseTotals"
+
+          class="border border-gray-300 px-4 py-2 text-right"
+        >
+          {{ total }}
+        </td>
+      </tr>
+
+
+      <!-- Profit/Loss -->
+      <tr>
+        <td class="font-bold">Profit / Loss</td>
+        <td
+          *ngFor="let profitLoss of profitLosses; let k = index"
+          class="border border-gray-300 px-4 py-2 text-right"
+          contenteditable
+          [attr.id]="'cell-profitLoss-' + k"
+          (input)="onProfitLossChange($event, k)"
+        >
+          {{ profitLoss || 0 }}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="1" class="font-bold">Opening Balance</td>
+        <td
+          *ngFor="let opening of openingBalances"
+          class="border border-gray-300 px-4 py-2 text-right"
+        >
+          {{ opening }}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="1" class="font-bold">Closing Balance</td>
+        <td
+          *ngFor="let closing of closingBalances"
+          class="border border-gray-300 px-4 py-2 text-right"
+        >
+          {{ closing }}
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
